@@ -6,11 +6,11 @@ public class Program
     public static void Main()
     {
         Starter starter = new Starter();
-        Logger logger = new Logger();
+        Logger logger = Logger.GetInstance;
 
         starter.Run();
+        File.WriteAllLines("logs.txt", logger.GetLogs());
         Console.ReadLine();
 
-        File.WriteAllLines("logger.txt", logger.logs);
     }
 }

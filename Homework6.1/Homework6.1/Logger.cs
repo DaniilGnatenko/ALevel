@@ -2,9 +2,24 @@
 
 internal class Logger
 {
+    private static Logger instance;
 
-    string[] logType = new string[] { "Info", "Warning", "Error" };
-    public string[] logs = new string[100];
+    private Logger() { }
+
+    public static Logger GetInstance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new Logger();
+            }
+            return instance;
+        }
+    }
+
+    readonly string[] logType = new string[] { "Info", "Warning", "Error" };
+    private string[] logs = new string[100];
     private int logsIndex = 0;
 
     public void CreateLog(int logTypeIndex, string message)
@@ -15,4 +30,8 @@ internal class Logger
         logsIndex++;
     }
 
+    public string[] GetLogs()
+    {
+        return logs;
+    }
 }

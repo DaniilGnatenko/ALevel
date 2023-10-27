@@ -2,11 +2,10 @@
 
 public class Action
 {
-    Result result = new Result();
-    Logger logger = new Logger();
+   
+    Logger logger = Logger.GetInstance;
     public Result InfoLog()
     {
-
         logger.CreateLog(0, "Start method: InfoLog");
         return new Result { Status = true };
     }
