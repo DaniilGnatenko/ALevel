@@ -19,23 +19,6 @@ namespace HomeworkModule2Lesson5.Services
                 File.Delete(logFiles[0]);
             }
         }
-
-       /* private int GetLatestLogNumber(string directoryPath)
-        {
-            string[] logFiles = Directory.GetFiles(directoryPath, "log*.txt");
-
-            int maxNumber = 0;
-            foreach (string file in logFiles)
-            {
-                string fileName = Path.GetFileNameWithoutExtension(file);
-                if (int.TryParse(fileName.Substring(3), out int number))
-                {
-                    maxNumber = Math.Max(maxNumber, number);
-                }
-            }
-
-            return maxNumber;
-        }*/
         public void WriteLogToFile(string filePath, string directoryPath, string log)
         {
             
