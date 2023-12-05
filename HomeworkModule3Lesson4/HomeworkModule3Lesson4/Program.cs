@@ -1,13 +1,12 @@
 ﻿
 public delegate int CalculateDelegate(int x, int y);
 
-public class Program
+public sealed class Program
 {
     public static event CalculateDelegate CalculateEvent;
 
-    static void Main()
+    internal static void Main()
     {
-
         CalculateEvent += Calculate;
         CalculateEvent += Calculate;
 
@@ -93,7 +92,9 @@ public class Program
             return 0;
         }
     }
+
     public static int Calculate(int x, int y) => x + y;
+
     public static void AddNumberToList(string name, string number)
     {
         Contact contact = new Contact() { Name = name, Number = number };
@@ -101,14 +102,12 @@ public class Program
     }
 
     public static List<Contact> contactList = new List<Contact>();
-
 }
 
 public sealed class Contact
 {
     public string Name { get; set; }
     public string Number { get; set; }
-
 }
 
 
