@@ -11,20 +11,23 @@
         Console.ReadLine();
     }
 
-    public static async Task<String> HelloMethod(string fileName)
+    public static async Task<string> HelloMethod(string fileName)
     {
         return await File.ReadAllTextAsync(fileName);
     }
     
-    public static async Task<String> WorldMethod(string fileName)
+    public static async Task<string> WorldMethod(string fileName)
     {
         return await File.ReadAllTextAsync(fileName);
     }
 
-    public static async Task<String> ConcatenationMethod(string firstFile, string secondFile)
+    public static async Task<string> ConcatenationMethod(string firstFile, string secondFile)
     {
-        var firstWord = await HelloMethod(firstFile);
-        var secondWord = await WorldMethod(secondFile);
-        return firstWord + ' ' + secondWord;
+        Task<string> task1 = HelloMethod(firstFile);
+        Task<string> task2 = WorldMethod(secondFile);
+
+        await Task.WhenAll(task1, task2);
+
+        return task1.Result + ' ' + task2.Result;
     }
 }
