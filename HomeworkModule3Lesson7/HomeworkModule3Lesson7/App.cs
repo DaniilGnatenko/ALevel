@@ -36,5 +36,4 @@ internal sealed class App
         File.Copy("logs.txt", $"Backup\\{fileName}");
         Console.WriteLine("Backup created");
     }
-
 }

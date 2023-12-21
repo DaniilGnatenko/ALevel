@@ -6,7 +6,6 @@ public sealed class Program
 {
     internal static async Task Main()
     {
-
         string configString = File.ReadAllText("config.json");
         Config config = JsonSerializer.Deserialize<Config>(configString);
         Logger logger = new Logger(config);
@@ -16,10 +15,7 @@ public sealed class Program
     }
 }
 
-public class Config
+public sealed class Config
 {
     public int ConfigurableNumber { get; set; }
 }
-
-
-

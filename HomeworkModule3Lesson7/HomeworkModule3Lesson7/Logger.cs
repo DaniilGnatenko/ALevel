@@ -1,7 +1,5 @@
 ﻿namespace HomeworkModule3Lesson7;
 
-public delegate void IsTimeToBackUp();
-
 internal sealed class Logger
 {
     public event IsTimeToBackUp BackUpEvent;
@@ -24,7 +22,7 @@ internal sealed class Logger
 
     public void BackUpCount()
     {
-        if ((_backUpCount) % _config.ConfigurableNumber == 0)
+        if ((_backUpCount % _config.ConfigurableNumber) == 0)
         {
             Console.WriteLine("Time To BackUP!");
             BackUpEvent.Invoke();
@@ -43,13 +41,13 @@ internal sealed class Logger
         string message = String.Empty;
         switch (logType)
         {
-            case LogType.error:
+            case LogType.Error:
                 message = "I broke a logic!";
                 break;
-            case LogType.info:
+            case LogType.Info:
                 message = "Info log!";
                 break;
-            case LogType.warning:
+            case LogType.Warning:
                 message = "Skipped logic in method!";
                 break;
         }
