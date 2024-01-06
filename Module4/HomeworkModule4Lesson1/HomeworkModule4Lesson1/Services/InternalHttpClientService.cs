@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using HomeworkModule4Lesson1.Services.Abstractions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 public class InternalHttpClientService : IInternalHttpClientService
 {
@@ -23,18 +24,20 @@ public class InternalHttpClientService : IInternalHttpClientService
         if (content != null)
         {
             httpMessage.Content =
-                new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
+                new StringContent(JsonConvert.SerializeObject(content, new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy()
+                    }
+                }), Encoding.UTF8, "application/json");
         }
 
         var result = await client.SendAsync(httpMessage);
 
-        if (result.IsSuccessStatusCode)
-        {
-            var resultContent = await result.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<TResponse>(resultContent);
-            return response!;
-        }
 
-        return default(TResponse)!;
+        var resultContent = await result.Content.ReadAsStringAsync();
+        var response = JsonConvert.DeserializeObject<TResponse>(resultContent);
+        return response!;
     }
 }
