@@ -55,13 +55,18 @@ public class OrderRepository : IOrderRepository
             return 0;
         }
 
-        _dbContext.OrderItems.UpdateRange(items.Select(s => new OrderItemEntity()
+        var updatedOrder = new List<OrderItemEntity>();
+        foreach (var item in items)
         {
-            Count = s.Count,
-            OrderId = result.Id,
-            ProductId = s.ProductId
-        }));
+            updatedOrder.Add(new OrderItemEntity()
+            {
+                Count = item.Count,
+                OrderId = result.Id,
+                ProductId = item.ProductId
+            });
+        }
 
+        result.OrderItems = updatedOrder;
 
         await _dbContext.SaveChangesAsync();
 
