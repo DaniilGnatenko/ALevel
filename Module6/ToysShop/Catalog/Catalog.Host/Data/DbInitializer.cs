@@ -67,7 +67,7 @@ public class DbInitializer
          new CatalogItemEntity() { CatalogTypeId = 3, CatalogBrandId = 6, AvailableStock = 11, Description = "Purse Pets Hello Kitty Interactive Shoulder Bag", Name = "Hello Kitty Interactive Shoulder Bag", Price = 1000, PictureFileName = "7.png" },
          new CatalogItemEntity() { CatalogTypeId = 3, CatalogBrandId = 6, AvailableStock = 5, Description = "Purse Pets Holly Hops Bunny Tote Bag Interactive Pet", Name = "Holly Hops Bunny Tote Bag", Price = 900, PictureFileName = "8.png" },
          new CatalogItemEntity() { CatalogTypeId = 4, CatalogBrandId = 5, AvailableStock = 9, Description = "Hot Wheels Corkscrew Crash Track Set FTB65", Name = "Corkscrew Crash Track Set FTB65", Price = 2600, PictureFileName = "9.png" },
-         new CatalogItemEntity() { CatalogTypeId = 4, CatalogBrandId = 5, AvailableStock = 12, Description = "Hot Wheels Track Builder Infinity Loop Kit Mattel GVG10 ", Name = "Infinity Loop Kit Mattel GVG10", Price = 2000, PictureFileName = "10.png" },
+         new CatalogItemEntity() { CatalogTypeId = 4, CatalogBrandId = 5, AvailableStock = 12, Description = "Hot Wheels Track Builder Infinity Loop Kit Mattel GVG10", Name = "Infinity Loop Kit Mattel GVG10", Price = 2000, PictureFileName = "10.png" },
     };
     }
 }
