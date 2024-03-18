@@ -3,13 +3,14 @@ using Catalog.Host.Models.Requests.CreateRequests;
 using Catalog.Host.Models.Requests.DeleteRequests;
 using Catalog.Host.Models.Responses;
 using Catalog.Host.Services.Interfaces;
-using Infrastructure;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Catalog.Host.Controllers;
 
 [ApiController]
+[Authorize(Policy = AuthPolicy.AllowClientPolicy)]
+[Scope("catalog.catalogbrand")]
 [Route(ComponentDefaults.DefaultRoute)]
 public class CatalogBrandController : ControllerBase
 {

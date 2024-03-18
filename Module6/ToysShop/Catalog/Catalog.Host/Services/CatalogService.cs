@@ -29,21 +29,6 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
         _mapper = mapper;
     }
 
-    public async Task<PaginatedItemsResponse<CatalogItemDto>> GetByBrandAsync(int id, int pageSize, int pageIndex)
-    {
-        return await ExecuteSafeAsync(async () =>
-        {
-            var result = await _catalogItemRepository.GetByBrandAsync(id, pageIndex, pageSize);
-            return new PaginatedItemsResponse<CatalogItemDto>()
-            {
-                Count = result.TotalCount,
-                Data = result.Data.Select(s => _mapper.Map<CatalogItemDto>(s)).ToList(),
-                PageIndex = pageIndex,
-                PageSize = pageSize
-            };
-        });
-    }
-
     public async Task<ItemResponse<CatalogItemDto>> GetByIdAsync(int id)
     {
         return await ExecuteSafeAsync(async () =>
@@ -52,21 +37,6 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
             return new ItemResponse<CatalogItemDto>()
             {
                 Item = _mapper.Map<CatalogItemDto>(result)
-            };
-        });
-    }
-
-    public async Task<PaginatedItemsResponse<CatalogItemDto>> GetByTypeAsync(int id, int pageSize, int pageIndex)
-    {
-        return await ExecuteSafeAsync(async () =>
-        {
-            var result = await _catalogItemRepository.GetByTypeAsync(id, pageIndex, pageSize);
-            return new PaginatedItemsResponse<CatalogItemDto>()
-            {
-                Count = result.TotalCount,
-                Data = result.Data.Select(s => _mapper.Map<CatalogItemDto>(s)).ToList(),
-                PageIndex = pageIndex,
-                PageSize = pageSize
             };
         });
     }
@@ -96,12 +66,13 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
 
             if (filters != null)
             {
-                if (filters.TryGetValue(CatalogTypeFilter.Brand, out var brand))
+                
+                if (filters.TryGetValue(CatalogTypeFilter.Brand, out var brand) && !filters.ContainsValue(1))
                 {
                     brandFilter = brand;
                 }
 
-                if (filters.TryGetValue(CatalogTypeFilter.Type, out var type))
+                if (filters.TryGetValue(CatalogTypeFilter.Type, out var type) && !filters.ContainsValue(1))
                 {
                     typeFilter = type;
                 }
@@ -116,7 +87,7 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
             return new PaginatedItemsResponse<CatalogItemDto>()
             {
                 Count = result.TotalCount,
-                Data = result.Data.Select(s => _mapper.Map<CatalogItemDto>(s)).ToList(),
+                Data = result.Data.Select(s => _mapper.Map<CatalogItemDto>(s)).OrderBy(x => x.Id),
                 PageIndex = pageIndex,
                 PageSize = pageSize
             };

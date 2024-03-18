@@ -118,7 +118,7 @@ namespace Catalog.Host.Repositories
             return new PaginatedItems<CatalogItemEntity>() { TotalCount = totalItems, Data = itemsOnPage };
         }
 
-        public async Task<int?> Update(int id, string name, string description, int price, int catalogBrandId, int catalogTypeId, string pictureFileName)
+        public async Task<int?> Update(int id, string name, string description, int price, int catalogBrandId, int catalogTypeId, string pictureFileName, int availableStock)
         {
             var itemToUpdate = await _dbContext.CatalogItemEntities.Where(w => w.Id == id).FirstOrDefaultAsync();
 
@@ -132,6 +132,7 @@ namespace Catalog.Host.Repositories
                 itemToUpdate.PictureFileName = pictureFileName;
                 itemToUpdate.CatalogTypeId = catalogTypeId;
                 itemToUpdate.CatalogType = await _dbContext.CatalogTypeEntities.Where(w => w.Id == catalogTypeId).FirstOrDefaultAsync();
+                itemToUpdate.AvailableStock = availableStock;
 
                 await _dbContext.SaveChangesAsync();
 

@@ -4,12 +4,16 @@ using Catalog.Host.Models.Requests.UpdateRequests;
 using Catalog.Host.Models.Responses;
 using Catalog.Host.Services.Interfaces;
 using Infrastructure;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Catalog.Host.Controllers;
 
 [ApiController]
+[Authorize(Policy = AuthPolicy.AllowClientPolicy)]
+[Scope("catalog.catalogitem")]
 [Route(ComponentDefaults.DefaultRoute)]
 public class CatalogItemController : ControllerBase
 {
@@ -44,7 +48,7 @@ public class CatalogItemController : ControllerBase
     [ProducesResponseType(typeof(UpdateResponse<int?>), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> Update(UpdateProductRequest request)
     {
-        var result = await _catalogItemService.Update(request.Id, request.Name, request.Description, request.Price, request.CatalogBrandId, request.CatalogTypeId, request.PictureFileName);
+        var result = await _catalogItemService.Update(request.Id, request.Name, request.Description, request.Price, request.CatalogBrandId, request.CatalogTypeId, request.PictureFileName, request.AvailableStock);
         return Ok(new UpdateResponse<int?>() { Id = result });
     }
 }

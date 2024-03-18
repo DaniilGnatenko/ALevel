@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using MVC.Dtos;
-using MVC.Models.Enums;
 using MVC.Models.Requests;
+using MVC.Models.Enums;
 using MVC.Services.Interfaces;
 using MVC.ViewModels;
 
@@ -25,12 +24,12 @@ public class CatalogService : ICatalogService
     {
         var filters = new Dictionary<CatalogTypeFilter, int>();
 
-        if (brand.HasValue)
+        if (brand.HasValue && brand != 1)
         {
             filters.Add(CatalogTypeFilter.Brand, brand.Value);
         }
         
-        if (type.HasValue)
+        if (type.HasValue && type != 1)
         {
             filters.Add(CatalogTypeFilter.Type, type.Value);
         }
@@ -57,11 +56,15 @@ public class CatalogService : ICatalogService
                PageSize = take
            });
 
+
+
         return result.Data.Select(x => new SelectListItem()
         {
             Value = x.Id.ToString(),
             Text = x.BrandName
-        });
+        }).OrderBy(x => x.Value);
+
+       
     }
 
     public async Task<IEnumerable<SelectListItem>> GetTypes(int page, int take)
@@ -78,6 +81,6 @@ public class CatalogService : ICatalogService
         {
             Value = x.Id.ToString(),
             Text = x.TypeName
-        });
+        }).OrderBy(x => x.Value);
     }
 }

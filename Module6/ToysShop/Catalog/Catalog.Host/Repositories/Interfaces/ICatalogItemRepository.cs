@@ -10,7 +10,7 @@ namespace Catalog.Host.Repositories.Interfaces
         Task<PaginatedItems<CatalogItemEntity>> GetByTypeAsync(int id, int pageIndex, int pageSize);
         Task<CatalogItemEntity> GetByIdAsync(int id);
         Task<int?> Add(string name, string description, int price, int availableStock, int catalogBrandId, int catalogTypeId, string pictureFileName);
-        Task<int?> Update(int id, string name, string description, int price, int catalogBrandId, int catalogTypeId, string pictureFileName);
+        Task<int?> Update(int id, string name, string description, int price, int catalogBrandId, int catalogTypeId, string pictureFileName,int availableStock);
         Task<bool> Delete(int id);
     }
 }
