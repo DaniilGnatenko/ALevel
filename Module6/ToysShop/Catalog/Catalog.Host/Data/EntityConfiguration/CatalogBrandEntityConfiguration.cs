@@ -12,6 +12,10 @@ public class CatalogBrandEntityConfiguration : IEntityTypeConfiguration<CatalogB
 
         builder.HasKey(h => h.Id);
 
+        builder.Property(p => p.Id)
+            .UseHiLo("catalog_brand_hilo")
+            .IsRequired();
+
         builder.Property(p => p.BrandName)
             .IsRequired(true)
             .HasMaxLength(50);

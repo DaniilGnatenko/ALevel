@@ -17,6 +17,6 @@ public class CatalogItemPictureResolver : IMemberValueResolver<CatalogItemEntity
 
     public object Resolve(CatalogItemEntity source, CatalogItemDto destination, string sourceMember, object destMember, ResolutionContext context)
     {
-        return $"{_config.Host}/{_config.ImgUrl}/{sourceMember}";
+        return $"{_config.CdnHost}/{_config.ImgUrl}/{sourceMember}";
     }
 }

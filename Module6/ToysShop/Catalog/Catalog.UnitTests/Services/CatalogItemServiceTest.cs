@@ -88,10 +88,11 @@ public class CatalogItemServiceTest
             It.IsAny<int>(),
             It.IsAny<int>(),
             It.IsAny<int>(),
-            It.IsAny<string>())).ReturnsAsync(testResult);
+            It.IsAny<string>(),
+            It.IsAny<int>())).ReturnsAsync(testResult);
 
         // act
-        var result = await _catalogItemService.Update(_testItem.Id, _testItem.Name, _testItem.Description, _testItem.Price, _testItem.CatalogBrandId, _testItem.CatalogTypeId, _testItem.PictureFileName);
+        var result = await _catalogItemService.Update(_testItem.Id, _testItem.Name, _testItem.Description, _testItem.Price, _testItem.CatalogBrandId, _testItem.CatalogTypeId, _testItem.PictureFileName, _testItem.AvailableStock);
 
         // assert
         result.Should().Be(testResult);
@@ -110,10 +111,11 @@ public class CatalogItemServiceTest
             It.IsAny<int>(),
             It.IsAny<int>(),
             It.IsAny<int>(),
-            It.IsAny<string>())).ReturnsAsync(testResult);
+            It.IsAny<string>(),
+            It.IsAny<int>())).ReturnsAsync(testResult);
 
         // act
-        var result = await _catalogItemService.Update(_testItem.Id, _testItem.Name, _testItem.Description, _testItem.Price, _testItem.CatalogBrandId, _testItem.CatalogTypeId, _testItem.PictureFileName);
+        var result = await _catalogItemService.Update(_testItem.Id, _testItem.Name, _testItem.Description, _testItem.Price, _testItem.CatalogBrandId, _testItem.CatalogTypeId, _testItem.PictureFileName, _testItem.AvailableStock);
 
         // assert
         result.Should().Be(testResult);

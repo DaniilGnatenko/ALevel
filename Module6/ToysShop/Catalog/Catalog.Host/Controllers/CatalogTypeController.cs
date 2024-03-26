@@ -4,12 +4,16 @@ using Catalog.Host.Models.Requests.DeleteRequests;
 using Catalog.Host.Models.Responses;
 using Catalog.Host.Services.Interfaces;
 using Infrastructure;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Catalog.Host.Controllers;
 
 [ApiController]
+[Authorize(Policy = AuthPolicy.AllowClientPolicy)]
+[Scope("catalog.catalogtype")]
 [Route(ComponentDefaults.DefaultRoute)]
 public class CatalogTypeController : ControllerBase
 {
