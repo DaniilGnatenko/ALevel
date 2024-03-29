@@ -7,51 +7,22 @@ namespace Basket.Services
     public class BasketService : IBasketService
     {
         private readonly ILogger<BasketService> _logger;
-        private BasketDto _basket = new BasketDto()
-        {
-            TotalCount = 0,
-            TotalPrice = 0,
-            Items = new List<CatalogItemDto> { }
-        };
-
-
-        public BasketService(ILogger<BasketService> logger)
+        private readonly ICacheService _cacheService;
+        public BasketService(ILogger<BasketService> logger, ICacheService cacheService)
         {
             _logger = logger;
+            _cacheService = cacheService;
         }
 
-        public async Task<BasketDto> AddItemToBasket(int id)
+        public async Task TestAdd(string userId, string data)
         {
-            var newItem = new CatalogItemDto()
-            {
-                Id = id,
-                Name = "testAddName",
-                Description = "someDescription",
-                Price = 1000,
-                PictureUrl = "10.png",
-                CatalogBrand = new CatalogBrand()
-                {
-                    Id = 2,
-                    BrandName = "TestBrand"
-                },
-                CatalogType = new CatalogType()
-                {
-                    Id = 2,
-                    TypeName = "TestType"
-                },
-                AvailableStock = 15
-            };
+            await _cacheService.AddOrUpdateAsync(userId, data);
+        }
 
-           _basket.Items.Add(newItem);
-
-            for (int i = 0; i < _basket.Items.Count; i++)
-            {
-               _basket.TotalPrice = _basket.Items[i].Price++;
-            }
-            _basket.TotalCount = _basket.Items.Count;
-
-            _logger.LogInformation($"Added to basket Item with Id {id}");
-            return _basket;
+        public async Task<TestGetResponse> TestGet(string userId)
+        {
+            var result = await _cacheService.GetAsync<string>(userId);
+            return new TestGetResponse() { Data = result };
         }
     }
 }

@@ -4,11 +4,11 @@ using Catalog.Host.Repositories.Interfaces;
 using Catalog.Host.Repositories;
 using Catalog.Host.Services.Interfaces;
 using Catalog.Host.Services;
-using Microsoft.EntityFrameworkCore;
 using Infrastructure.Filters;
 using Microsoft.OpenApi.Models;
 using Infrastructure.Extensions;
 using Microsoft.AspNetCore.HttpLogging;
+using Infrastructure.Middleware;
 
 var configuration = GetConfiguration();
 
@@ -95,6 +95,7 @@ app.UseSwagger()
 
 app.UseRouting();
 app.UseCors("CorsPolicy");
+app.UseRequestLogging();
 
 app.UseAuthentication();
 app.UseAuthorization();

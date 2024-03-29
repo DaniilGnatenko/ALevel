@@ -44,9 +44,12 @@ builder.Services.AddSwaggerGen(options =>
     });
 
     options.OperationFilter<AuthorizeCheckOperationFilter>();
+    options.OperationFilter<RateLimitCheckOperationFilter>();
 });
 
 builder.AddConfiguration();
+builder.Services.Configure<RedisConfig>(
+    builder.Configuration.GetSection("Redis"));
 
 builder.Services.AddAuthorization(configuration);
 
@@ -55,6 +58,9 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IHttpClientService, HttpClientService>();
+builder.Services.AddTransient<IJsonSerializer, JsonSerializer>();
+builder.Services.AddTransient<IRedisCacheConnectionService, RedisCacheConnectionService>();
+builder.Services.AddTransient<ICacheService, CacheService>();
 builder.Services.AddTransient<IBasketService, BasketService>();
 
 builder.Services.AddCors(options =>

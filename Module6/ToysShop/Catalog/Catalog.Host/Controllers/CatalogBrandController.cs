@@ -38,6 +38,10 @@ public class CatalogBrandController : ControllerBase
     public async Task<IActionResult> Delete(DeleteRequest request)
     {
         var result = await _catalogBrandService.Delete(request.Id);
+        if (result == false)
+        {
+            return NotFound();
+        }
         return Ok(new DeleteItemResponse() { IsSuccess = result });
     }
 
@@ -46,6 +50,10 @@ public class CatalogBrandController : ControllerBase
     public async Task<IActionResult> Update(UpdateRequest request)
     {
         var result = await _catalogBrandService.Update(request.Id, request.NewName);
+        if (result == null)
+        {
+            return NotFound();
+        }
         return Ok(new UpdateResponse<int?>() { Id = result });
     }
 }

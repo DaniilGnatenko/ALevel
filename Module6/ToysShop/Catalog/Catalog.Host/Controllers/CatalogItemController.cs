@@ -41,6 +41,10 @@ public class CatalogItemController : ControllerBase
     public async Task<IActionResult> Delete(DeleteRequest request)
     {
         var result = await _catalogItemService.Delete(request.Id);
+        if (result == false)
+        {
+            return NotFound();
+        }
         return Ok(new DeleteItemResponse() { IsSuccess = result });
     }
 
@@ -49,6 +53,10 @@ public class CatalogItemController : ControllerBase
     public async Task<IActionResult> Update(UpdateProductRequest request)
     {
         var result = await _catalogItemService.Update(request.Id, request.Name, request.Description, request.Price, request.CatalogBrandId, request.CatalogTypeId, request.PictureFileName, request.AvailableStock);
+        if (result == null)
+        {
+            return NotFound();
+        }
         return Ok(new UpdateResponse<int?>() { Id = result });
     }
 }

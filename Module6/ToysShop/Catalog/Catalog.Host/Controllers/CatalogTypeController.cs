@@ -41,6 +41,10 @@ public class CatalogTypeController : ControllerBase
     public async Task<IActionResult> Delete(DeleteRequest request)
     {
         var result = await _catalogTypeService.Delete(request.Id);
+        if (result == false)
+        {
+            return NotFound();
+        }
         return Ok(new DeleteItemResponse() { IsSuccess = result });
     }
 
@@ -49,6 +53,10 @@ public class CatalogTypeController : ControllerBase
     public async Task<IActionResult> Update(UpdateRequest request)
     {
         var result = await _catalogTypeService.Update(request.Id, request.NewName);
+        if (result == null)
+        {
+            return NotFound();
+        }
         return Ok(new UpdateResponse<int?>() { Id = result });
     }
 }

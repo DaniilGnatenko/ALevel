@@ -64,6 +64,10 @@ public class CatalogBffController : ControllerBase
     public async Task<IActionResult> Item(ItemRequest request)
     {
         var result = await _catalogService.GetByIdAsync(request.Id);
+        if (result == null)
+        {
+            return NotFound();
+        }
         return Ok(result);
     }
 }

@@ -1,9 +1,9 @@
-﻿using Basket.Models.Dtos;
+﻿using Basket.Models.Requests;
 
-namespace Basket.Services.Interfaces
+namespace Basket.Services.Interfaces;
+
+public interface IBasketService
 {
-    public interface IBasketService
-    {
-        Task<BasketDto> AddItemToBasket(int id);
-    }
+    Task TestAdd(string userId, string data);
+    Task<TestGetResponse> TestGet(string userId);
 }

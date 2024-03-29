@@ -1,39 +1,44 @@
+using Basket.Models.Requests;
 using Basket.Services.Interfaces;
-using Infrastructure;
+using Infrastructure.Filters;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
-namespace Basket.Controllers
+namespace Basket.Controllers;
+
+[ApiController]
+[Authorize(Policy = AuthPolicy.AllowEndUserPolicy)]
+[Route(ComponentDefaults.DefaultRoute)]
+public class BasketBffController : ControllerBase
 {
-    [ApiController]
-    [Authorize(Policy = AuthPolicy.AllowEndUserPolicy)]
-    [Route(ComponentDefaults.DefaultRoute)]
-    public class BasketBffController : ControllerBase
+    private readonly ILogger<BasketBffController> _logger;
+    private readonly IBasketService _basketService;
+
+    public BasketBffController(
+        ILogger<BasketBffController> logger,
+        IBasketService basketService)
     {
-        private readonly ILogger<BasketBffController> _logger;
+        _logger = logger;
+        _basketService = basketService;
+    }
 
-        public BasketBffController(ILogger<BasketBffController> logger, IBasketService basketService)
-        {
-            _logger = logger;
-        }
+    [HttpPost]
+    [RateLimitFilter(10)]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    public async Task<IActionResult> TestAdd(TestAddRequest data)
+    {
+        var basketId = User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
+        await _basketService.TestAdd(basketId!, data.Data);
+        return Ok();
+    }
 
-        [HttpGet]
-        [AllowAnonymous]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        public IActionResult TestMessage()
-        {
-            _logger.LogInformation("Test Message!");
-            return Ok();
-        }
-
-        [HttpGet]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        public IActionResult UserIdMessage()
-        {
-            _logger.LogInformation($"User Id {User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value}");
-            return Ok();
-        }
+    [HttpPost]
+    [RateLimitFilter(10)]
+    [ProducesResponseType(typeof(TestGetResponse), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> TestGet()
+    {
+        var basketId = User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
+        var response = await _basketService.TestGet(basketId!);
+        return Ok(response);
     }
 }
