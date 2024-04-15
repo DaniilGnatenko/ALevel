@@ -4,8 +4,12 @@ namespace MVC.Services.Interfaces
 {
     public interface IBasketService
     {
-        Task<bool> LogTestMessage();
-        Task<bool> LogUserIdMessage();
-        Task<Basket> AddToBasket(int id);
-    }
+        Task<int> AddToBasket(int id);
+        Task<Basket> GetBasket();
+        Task<int> RemoveItemFromBasket(int id);
+        Task<bool> DeleteItemFromBasket(int id);
+        Task<bool> DeleteItemFromBasket(int id, int amount);
+        Task<bool> EmptyTheCart();
+        Task<bool> EmptyTheCartWithoutAmount();
+	}
 }

@@ -41,15 +41,19 @@ namespace Host.Quickstart.Account
             _events = events;
         }
 
-        /// <summary>
-        /// initiate roundtrip to external authentication provider
-        /// </summary>
+		/// <summary>
+		/// initiate roundtrip to external authentication provider
+		/// </summary>
+		/// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
         [HttpGet]
         public async Task<IActionResult> Challenge(string provider, string returnUrl)
         {
-            if (string.IsNullOrEmpty(returnUrl)) returnUrl = "~/";
+            if (string.IsNullOrEmpty(returnUrl))
+			{
+				returnUrl = "~/";
+			}
 
-            // validate returnUrl - either it is a valid OIDC URL or back to a local page
+			// validate returnUrl - either it is a valid OIDC URL or back to a local page
             if (Url.IsLocalUrl(returnUrl) == false && _interaction.IsValidReturnUrl(returnUrl) == false)
             {
                 // user might have clicked on a malicious link - should be logged
@@ -63,7 +67,7 @@ namespace Host.Quickstart.Account
             }
             else
             {
-                // start challenge and roundtrip the return URL and scheme 
+                // start challenge and roundtrip the return URL and scheme
                 var props = new AuthenticationProperties
                 {
                     RedirectUri = Url.Action(nameof(Callback)),
@@ -78,9 +82,10 @@ namespace Host.Quickstart.Account
             }
         }
 
-        /// <summary>
-        /// Post processing of external authentication
-        /// </summary>
+		/// <summary>
+		/// Post processing of external authentication
+		/// </summary>
+		/// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
         [HttpGet]
         public async Task<IActionResult> Callback()
         {

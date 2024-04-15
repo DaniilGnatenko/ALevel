@@ -2,7 +2,6 @@
 
 public class PaginatedItemsResponse<T>
 {
-
     public int PageIndex { get; init; }
 
     public int PageSize { get; init; }

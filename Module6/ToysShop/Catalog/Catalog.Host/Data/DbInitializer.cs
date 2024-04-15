@@ -47,13 +47,13 @@ public class DbInitializer
     private static IEnumerable<CatalogTypeEntity> GetPreconfiguredCatalogTypes()
     {
         return new List<CatalogTypeEntity>()
-    {
-        new CatalogTypeEntity() { TypeName = "None"},
-        new CatalogTypeEntity() { TypeName = "Doll"},
-        new CatalogTypeEntity() { TypeName = "Interactive toy"},
-        new CatalogTypeEntity() { TypeName = "Handbags"},
-        new CatalogTypeEntity() { TypeName = "Track"}
-    }; 
+        {
+        new CatalogTypeEntity() { TypeName = "None" },
+        new CatalogTypeEntity() { TypeName = "Doll" },
+        new CatalogTypeEntity() { TypeName = "Interactive toy" },
+        new CatalogTypeEntity() { TypeName = "Handbags" },
+        new CatalogTypeEntity() { TypeName = "Track" }
+        };
     }
 
     private static IEnumerable<CatalogItemEntity> GetPreconfiguredCatalogItems()

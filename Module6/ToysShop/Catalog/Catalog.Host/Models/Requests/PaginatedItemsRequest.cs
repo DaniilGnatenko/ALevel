@@ -11,7 +11,7 @@ public class PaginatedItemsRequest<T>
     [Required]
     [Range(0, 50)]
     public int PageSize { get; set; }
-    public Dictionary<T, int>? Filters { get; set; }
+    public Dictionary<T, int> Filters { get; set; }
 }
 
 public class PaginatedItemsRequest

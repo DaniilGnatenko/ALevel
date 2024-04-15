@@ -1,4 +1,5 @@
 using Basket.Models.Requests;
+using Basket.Models.Responses;
 using Basket.Services.Interfaces;
 using Infrastructure.Filters;
 using Infrastructure.Identity;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Basket.Controllers;
 
 [ApiController]
-[Authorize(Policy = AuthPolicy.AllowEndUserPolicy)]
+[Authorize(Policy = AuthPolicy.AllowClientPolicy)]
 [Route(ComponentDefaults.DefaultRoute)]
 public class BasketBffController : ControllerBase
 {
@@ -22,23 +23,61 @@ public class BasketBffController : ControllerBase
         _basketService = basketService;
     }
 
-    [HttpPost]
-    [RateLimitFilter(10)]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
-    public async Task<IActionResult> TestAdd(TestAddRequest data)
+    [HttpGet]
+    [RateLimitFilter(50)]
+    [ProducesResponseType(typeof(GetResponse), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetItems()
     {
         var basketId = User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
-        await _basketService.TestAdd(basketId!, data.Data);
-        return Ok();
+        var response = await _basketService.GetItems(basketId!);
+
+        if (response == null)
+        {
+            _logger.LogInformation("Not found items");
+            return NotFound();
+        }
+
+        return Ok(response);
     }
 
-    [HttpPost]
-    [RateLimitFilter(10)]
-    [ProducesResponseType(typeof(TestGetResponse), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> TestGet()
+    [HttpGet]
+    [RateLimitFilter(50)]
+    [ProducesResponseType(typeof(GetWithUserResponse), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetItemsWithUser()
+	{
+		var basketId = User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
+
+		var response = await _basketService.GetItems(basketId!);
+
+		if (response == null)
+		{
+			_logger.LogInformation("Not found items");
+			return NotFound();
+		}
+
+		return Ok(new GetWithUserResponse()
+        {
+            Items = response.Items,
+            UserKey = basketId!
+        });
+	}
+
+    [HttpGet]
+    [RateLimitFilter(50)]
+    [ProducesResponseType(typeof(GetUserResponse), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetUser()
     {
         var basketId = User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
-        var response = await _basketService.TestGet(basketId!);
-        return Ok(response);
+
+        if (basketId == null)
+        {
+			_logger.LogInformation("User not logged in");
+			return NotFound();
+        }
+
+        return Ok(new GetUserResponse()
+        {
+            UserKey = basketId!
+        });
     }
 }

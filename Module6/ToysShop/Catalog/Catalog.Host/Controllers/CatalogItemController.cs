@@ -3,11 +3,8 @@ using Catalog.Host.Models.Requests.DeleteRequests;
 using Catalog.Host.Models.Requests.UpdateRequests;
 using Catalog.Host.Models.Responses;
 using Catalog.Host.Services.Interfaces;
-using Infrastructure;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Catalog.Host.Controllers;
 
@@ -45,6 +42,7 @@ public class CatalogItemController : ControllerBase
         {
             return NotFound();
         }
+
         return Ok(new DeleteItemResponse() { IsSuccess = result });
     }
 
@@ -57,6 +55,20 @@ public class CatalogItemController : ControllerBase
         {
             return NotFound();
         }
+
         return Ok(new UpdateResponse<int?>() { Id = result });
     }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(UpdateResponse<int?>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> UpdateStock(UpdateProductStockRequest request)
+	{
+		var result = await _catalogItemService.Update(request.Id, request.AvailableStock);
+		if (result == null)
+		{
+			return NotFound();
+		}
+
+		return Ok(new UpdateResponse<int?>() { Id = result });
+	}
 }

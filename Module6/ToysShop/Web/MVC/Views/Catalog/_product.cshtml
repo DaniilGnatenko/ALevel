@@ -3,13 +3,25 @@
 
 <form>
 
-    <img class="esh-catalog-thumbnail" src="@Model.PictureUrl" />
+	<img class="img-fluid img-thumbnail" src="@Model.PictureUrl"/>
 
-    <div class="esh-catalog-name">
-        <span>@Model.Name</span>
-    </div>
-    <div class="esh-catalog-price">
-        <span>@Model.Price.ToString("N2")</span>
-    </div>
-    <input type="hidden" asp-for="@Model.Id" name="id" />
+	<div class="esh-catalog-name">
+		<span>@Model.Name</span>
+	</div>
+	<div class="esh-catalog-price">
+		<span>@Model.Price.ToString()</span>
+	</div>
+	<input type="hidden" asp-for="@Model.Id" name="id" />
+	<a asp-controller="Catalog" asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">View details</a>
+	@if (Context.User.Identity.IsAuthenticated)
+	{
+		if (Model.AvailableStock == 0)
+		{
+			<button asp-controller="Basket" asp-action="AddToBasket" type="submit" class="btn btn-outline-success btn-rounded" value="@Model.Id" disabled>Out Of Stock</button>
+		}
+		else
+		{
+			<button asp-controller="Basket" asp-action="AddToBasket" type="submit" class="btn btn-outline-success btn-rounded" value="@Model.Id">Add To Basket</button>
+		}
+	}
 </form>

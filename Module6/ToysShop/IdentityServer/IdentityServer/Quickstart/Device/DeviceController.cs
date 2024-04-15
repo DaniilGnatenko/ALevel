@@ -1,7 +1,5 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,13 +41,20 @@ namespace IdentityServer4.Quickstart.UI.Device
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery(Name = "user_code")] string userCode)
         {
-            if (string.IsNullOrWhiteSpace(userCode)) return View("UserCodeCapture");
+			if (string.IsNullOrWhiteSpace(userCode))
+			{
+				return View("UserCodeCapture");
+			}
 
-            var vm = await BuildViewModelAsync(userCode);
-            if (vm == null) return View("Error");
+			var vm = await BuildViewModelAsync(userCode);
 
-            vm.ConfirmUserCode = true;
-            return View("UserCodeConfirmation", vm);
+			if (vm == null)
+			{
+				return View("Error");
+			}
+
+			vm.ConfirmUserCode = true;
+			return View("UserCodeConfirmation", vm);
         }
 
         [HttpPost]
@@ -57,7 +62,10 @@ namespace IdentityServer4.Quickstart.UI.Device
         public async Task<IActionResult> UserCodeCapture(string userCode)
         {
             var vm = await BuildViewModelAsync(userCode);
-            if (vm == null) return View("Error");
+            if (vm == null)
+			{
+				return View("Error");
+			}
 
             return View("UserCodeConfirmation", vm);
         }
@@ -66,20 +74,42 @@ namespace IdentityServer4.Quickstart.UI.Device
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Callback(DeviceAuthorizationInputModel model)
         {
-            if (model == null) throw new ArgumentNullException(nameof(model));
+            if (model == null)
+			{
+				throw new ArgumentNullException(nameof(model));
+			}
 
             var result = await ProcessConsent(model);
-            if (result.HasValidationError) return View("Error");
+            if (result.HasValidationError)
+			{
+				return View("Error");
+			}
 
             return View("Success");
         }
+
+        public ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
+		{
+			return new ScopeViewModel
+			{
+				Name = scope.Name,
+				DisplayName = scope.DisplayName,
+				Description = scope.Description,
+				Emphasize = scope.Emphasize,
+				Required = scope.Required,
+				Checked = check || scope.Required
+			};
+		}
 
         private async Task<ProcessConsentResult> ProcessConsent(DeviceAuthorizationInputModel model)
         {
             var result = new ProcessConsentResult();
 
             var request = await _interaction.GetAuthorizationContextAsync(model.UserCode);
-            if (request == null) return result;
+            if (request == null)
+			{
+				return result;
+			}
 
             ConsentResponse grantedConsent = null;
 
@@ -91,6 +121,7 @@ namespace IdentityServer4.Quickstart.UI.Device
                 // emit event
                 await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.ClientId, request.ScopesRequested));
             }
+
             // user clicked 'yes' - validate the data
             else if (model.Button == "yes")
             {
@@ -175,7 +206,6 @@ namespace IdentityServer4.Quickstart.UI.Device
 
                 RememberConsent = model?.RememberConsent ?? true,
                 ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>(),
-                
                 ClientName = client.ClientName ?? client.ClientId,
                 ClientUrl = client.ClientUri,
                 ClientLogoUrl = client.LogoUri,
@@ -208,18 +238,6 @@ namespace IdentityServer4.Quickstart.UI.Device
             };
         }
 
-        public ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
-        {
-            return new ScopeViewModel
-            {
-                Name = scope.Name,
-                DisplayName = scope.DisplayName,
-                Description = scope.Description,
-                Emphasize = scope.Emphasize,
-                Required = scope.Required,
-                Checked = check || scope.Required
-            };
-        }
         private ScopeViewModel GetOfflineAccessScope(bool check)
         {
             return new ScopeViewModel

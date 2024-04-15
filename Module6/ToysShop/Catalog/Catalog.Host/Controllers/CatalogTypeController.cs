@@ -3,11 +3,8 @@ using Catalog.Host.Models.Requests.CreateRequests;
 using Catalog.Host.Models.Requests.DeleteRequests;
 using Catalog.Host.Models.Responses;
 using Catalog.Host.Services.Interfaces;
-using Infrastructure;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Catalog.Host.Controllers;
 
@@ -45,6 +42,7 @@ public class CatalogTypeController : ControllerBase
         {
             return NotFound();
         }
+
         return Ok(new DeleteItemResponse() { IsSuccess = result });
     }
 
@@ -57,6 +55,7 @@ public class CatalogTypeController : ControllerBase
         {
             return NotFound();
         }
+
         return Ok(new UpdateResponse<int?>() { Id = result });
     }
 }

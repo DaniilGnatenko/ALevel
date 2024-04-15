@@ -1,7 +1,4 @@
 ﻿using Catalog.Host.Data.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace Catalog.Host.Data.EntityConfiguration;
 
 public class CatalogBrandEntityConfiguration : IEntityTypeConfiguration<CatalogBrandEntity>

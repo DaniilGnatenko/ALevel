@@ -86,6 +86,7 @@ app.UseSwagger()
 
 app.UseRouting();
 app.UseCors("CorsPolicy");
+app.UseRequestLogging();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -42,6 +42,7 @@ public class CatalogBrandController : ControllerBase
         {
             return NotFound();
         }
+
         return Ok(new DeleteItemResponse() { IsSuccess = result });
     }
 
@@ -54,6 +55,7 @@ public class CatalogBrandController : ControllerBase
         {
             return NotFound();
         }
+
         return Ok(new UpdateResponse<int?>() { Id = result });
     }
 }

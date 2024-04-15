@@ -1,0 +1,53 @@
+﻿@model Order
+
+@if (Context.User.Identity.IsAuthenticated)
+{
+
+	<table class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th scope="col">Order ID</th>
+				<th scope="col">Created Time</th>
+				<th scope="col">Total Price</th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			<tr>
+				<td>@Model.Id</td>
+				<td>@Model.CreatedDate.ToLocalTime()</td>
+				<td>@Model.TotalPrice</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<table class="table mb-0">
+						<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">Product</th>
+								<th scope="col">Price Per One</th>
+								<th scope="col">Amount</th>
+							</tr>
+						</thead>
+						<tbody class="table-group-divider">
+							@foreach (var orderItem in Model.Items)
+							{
+								<tr>
+									<th scope="row">@(Model.Items.IndexOf(orderItem) + 1)</th>
+									<td>@orderItem.Name</td>
+									<td>@orderItem.PricePerOne</td>
+									<td>@orderItem.Amount</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+}
+else
+{
+	<h1>You must be logged in to view orders</h1>
+}
+

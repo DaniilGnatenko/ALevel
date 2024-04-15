@@ -1,48 +1,217 @@
 ﻿using MVC.Models.Requests;
+using MVC.Models.Responses;
 using MVC.Services.Interfaces;
 using MVC.ViewModels;
-using System.Net;
 
 namespace MVC.Services;
-public class BasketService :IBasketService
+public class BasketService : IBasketService
 {
     private readonly IOptions<AppSettings> _settings;
     private readonly IHttpClientService _httpClient;
-    private readonly ILogger<CatalogService> _logger;
+    private readonly ILogger<BasketService> _logger;
 
-    public BasketService(IHttpClientService httpClient, ILogger<CatalogService> logger, IOptions<AppSettings> settings)
+    public BasketService(IHttpClientService httpClient, ILogger<BasketService> logger, IOptions<AppSettings> settings)
     {
         _httpClient = httpClient;
         _settings = settings;
         _logger = logger;
     }
 
-
-    public async Task<bool> LogTestMessage()
+    public async Task<Basket> GetBasket()
     {
-       var result = await _httpClient.SendAsync($"{_settings.Value.BasketUrl}/testmessage", HttpMethod.Get);
+        _logger.LogInformation($"Get request from basket controller");
 
-        return result;
+        var result = await _httpClient.SendAsync<GetBasketResponse>($"{_settings.Value.BasketBffUrl}/getitems", HttpMethod.Get);
+
+        if (result == null)
+        {
+			_logger.LogInformation($"Basket without items");
+			return new Basket() { Items = new List<OrderItem>() { } };
+		}
+
+        _logger.LogInformation($"Get Basket success!");
+        return new Basket() { Items = result.Items };
     }
 
-    public async Task<bool> LogUserIdMessage()
+    public async Task<int> AddToBasket(int id)
     {
-        var result = await _httpClient.SendAsync($"{_settings.Value.BasketUrl}/useridmessage", HttpMethod.Get);
+        _logger.LogInformation($"Trying to find item with {id}");
+        var item = await _httpClient.SendAsync<CatalogItem, IdRequest>(
+            $"{_settings.Value.CatalogUrl}/item",
+            HttpMethod.Post,
+            new IdRequest() { Id = id });
 
-        return result;
-    }
+        if (item == null || item.AvailableStock == 0)
+        {
+            _logger.LogInformation($"Item not found or out of stock");
+            return 0;
+        }
 
-    public async Task<Basket> AddToBasket(int id)
-    {
-        var result = await _httpClient.SendAsync<Basket, ItemRequest>($"http://localhost:5032/api/v1/basket/additemtobasket", HttpMethod.Post, 
+        _logger.LogInformation($"Found item with ID: {item.Id}, name - {item.Name}, price - {item.Price}");
+
+        var result = await _httpClient.SendAsync<ItemActionResponse<OrderItem>, ItemRequest>(
+            $"{_settings.Value.BasketItemUrl}/additem",
+            HttpMethod.Post,
             new ItemRequest()
             {
-                Id = id
+                ItemId = item.Id,
+                Name = item.Name,
+                PricePerOne = item.Price
             });
 
-        _logger.LogInformation($"{result.Items[0].Name} with {result.Items[0].Id}");
+        await _httpClient.SendAsync<ItemActionResponse<int>, UpdateProductStockRequest>(
+            $"{_settings.Value.CatalogItemUrl}/updatestock",
+            HttpMethod.Post,
+            new UpdateProductStockRequest()
+			{
+                Id = item.Id,
+                AvailableStock = item.AvailableStock - 1
+			});
 
-        return result;
+        _logger.LogInformation($"Changed available stock for item with ID: {item.Id}");
+
+        _logger.LogInformation($"Item with  ID: {result.Result.ItemId} successfully added!");
+
+        return result.Result.ItemId;
     }
 
+    public async Task<int> RemoveItemFromBasket(int id)
+    {
+        _logger.LogInformation($"Trying to find item with {id}");
+        var item = await _httpClient.SendAsync<CatalogItem, IdRequest>(
+            $"{_settings.Value.CatalogUrl}/item",
+            HttpMethod.Post,
+            new IdRequest() { Id = id });
+
+        if (item == null)
+        {
+			_logger.LogInformation($"Item not found");
+			return 0;
+        }
+
+        _logger.LogInformation($"Found item with ID: {item.Id}, name - {item.Name}, price - {item.Price}");
+
+        var result = await _httpClient.SendAsync<ItemActionResponse<int>, ItemIdRequest>(
+            $"{_settings.Value.BasketItemUrl}/update",
+            HttpMethod.Post,
+            new ItemIdRequest() { ItemId = item.Id });
+
+        await _httpClient.SendAsync<ItemActionResponse<int>, UpdateProductStockRequest>(
+            $"{_settings.Value.CatalogItemUrl}/updatestock",
+            HttpMethod.Post,
+            new UpdateProductStockRequest()
+			{
+				Id = item.Id,
+				AvailableStock = item.AvailableStock + 1
+			});
+
+        _logger.LogInformation($"Changed available stock for item with ID: {item.Id}");
+
+        return result.Result;
+    }
+
+    public async Task<bool> DeleteItemFromBasket(int id, int amount)
+    {
+        _logger.LogInformation($"Trying to find item with {id}");
+        var item = await _httpClient.SendAsync<CatalogItem, IdRequest>(
+            $"{_settings.Value.CatalogUrl}/item",
+            HttpMethod.Post,
+            new IdRequest() { Id = id });
+
+        if (item == null)
+        {
+			_logger.LogInformation($"Item not found");
+			return false;
+        }
+
+        _logger.LogInformation($"Found item with ID: {item.Id}, name - {item.Name}, price - {item.Price}");
+
+        var result = await _httpClient.SendAsync<ItemActionResponse<bool>, ItemIdRequest>(
+            $"{_settings.Value.BasketItemUrl}/deleteitem",
+            HttpMethod.Post,
+            new ItemIdRequest() { ItemId = item.Id });
+
+        await _httpClient.SendAsync<ItemActionResponse<int>, UpdateProductStockRequest>(
+            $"{_settings.Value.CatalogItemUrl}/updatestock",
+            HttpMethod.Post,
+            new UpdateProductStockRequest()
+			{
+				Id = item.Id,
+				AvailableStock = item.AvailableStock + amount
+			});
+
+        _logger.LogInformation($"Changed available stock for item with ID: {item.Id}");
+
+        _logger.LogInformation($"Item in quantity: {amount} with ID: {id} successfully removed from basket!");
+
+        return result.Result;
+    }
+
+    public async Task<bool> DeleteItemFromBasket(int id)
+	{
+		_logger.LogInformation($"Trying to find item with {id}");
+		var item = await _httpClient.SendAsync<CatalogItem, IdRequest>(
+            $"{_settings.Value.CatalogUrl}/item",
+            HttpMethod.Post,
+            new IdRequest() { Id = id });
+
+		if (item == null)
+		{
+			_logger.LogInformation($"Item not found");
+			return false;
+		}
+
+		_logger.LogInformation($"Found item with ID: {item.Id}, name - {item.Name}, price - {item.Price}");
+
+		var result = await _httpClient.SendAsync<ItemActionResponse<bool>, ItemIdRequest>(
+            $"{_settings.Value.BasketItemUrl}/deleteitem",
+            HttpMethod.Post,
+            new ItemIdRequest() { ItemId = item.Id });
+
+		_logger.LogInformation($"Item with ID: {id} successfully deleted from basket!");
+
+		return result.Result;
+	}
+
+    public async Task<bool> EmptyTheCart()
+	{
+        _logger.LogInformation($"Clearing the shopping cart by button");
+        var basket = await GetBasket();
+
+        if (basket.Items == null)
+        {
+			_logger.LogInformation($"basket is empty");
+			return false;
+        }
+
+        foreach (var item in basket.Items)
+        {
+			_logger.LogInformation($"Deleting item with ID: {item.ItemId} from basket");
+			await DeleteItemFromBasket(item.ItemId, item.Amount);
+        }
+
+        _logger.LogInformation($"Successfully cleared the shopping cart");
+        return true;
+	}
+
+    public async Task<bool> EmptyTheCartWithoutAmount()
+	{
+		_logger.LogInformation($"Clearing the shopping cart to create an order");
+		var basket = await GetBasket();
+
+		if (basket.Items == null)
+		{
+			_logger.LogInformation($"basket is empty");
+			return false;
+		}
+
+		foreach (var item in basket.Items)
+		{
+			_logger.LogInformation($"Deleting item with {item.ItemId} from basket");
+			await DeleteItemFromBasket(item.ItemId);
+		}
+
+		_logger.LogInformation($"Successfully cleared the shopping cart");
+		return true;
+	}
 }

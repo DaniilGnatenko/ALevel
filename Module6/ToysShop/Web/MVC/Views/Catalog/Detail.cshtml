@@ -1,0 +1,41 @@
+﻿@model CatalogItem
+
+<div class="container">
+	<div class="row">
+		<div class="col align-self-center">
+			<div class="card text-center" style="width: 20rem;">
+				<img src="@Model.PictureUrl" class="card-img-top" alt="...">
+				<div class="card-body">
+					<h5 class="card-title">@Model.Name</h5>
+					<p class="card-text">@Model.Description</p>
+				</div>
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item">
+						<div class="esh-catalog-price">
+							<span>Price: @Model.Price.ToString()</span>
+						</div>
+					</li>
+					<li class="list-group-item">Type: @Model.CatalogType.TypeName</li>
+					<li class="list-group-item">Brand: @Model.CatalogBrand.BrandName</li>
+				</ul>
+				<div class="card-body">
+					<p class="card-text">Available stock: @Model.AvailableStock</p>
+					<form>
+						<input type="hidden" asp-for="@Model.Id" name="id" />
+						@if (Context.User.Identity.IsAuthenticated)
+						{
+							if (Model.AvailableStock == 0)
+							{
+								<button asp-controller="Basket" asp-action="AddToBasket" type="submit" class="btn btn-outline-success btn-rounded" value="@Model.Id" disabled>Out Of Stock</button>
+							}
+							else
+							{
+								<button asp-controller="Basket" asp-action="AddToBasket" type="submit" class="btn btn-outline-success btn-rounded" value="@Model.Id">Add To Basket</button>
+							}
+						}
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

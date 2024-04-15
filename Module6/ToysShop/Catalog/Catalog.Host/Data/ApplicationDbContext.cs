@@ -13,6 +13,7 @@ public class ApplicationDbContext : DbContext
     protected ApplicationDbContext()
     {
     }
+
     public DbSet<CatalogBrandEntity> CatalogBrandEntities { get; set; }
     public DbSet<CatalogItemEntity> CatalogItemEntities { get; set; }
     public DbSet<CatalogTypeEntity> CatalogTypeEntities { get; set; }

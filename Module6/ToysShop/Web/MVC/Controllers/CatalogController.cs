@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using MVC.Services.Interfaces;
 using MVC.ViewModels.CatalogViewModels;
 using MVC.ViewModels.Pagination;
@@ -24,6 +25,7 @@ public class CatalogController : Controller
         {
             return View("Error");
         }
+
         var info = new PaginationInfo()
         {
             ActualPage = page.Value,
@@ -31,6 +33,7 @@ public class CatalogController : Controller
             TotalItems = catalog.Count,
             TotalPages = (int)Math.Ceiling((decimal)catalog.Count / itemsPage.Value)
         };
+
         var vm = new IndexViewModel()
         {
             CatalogItems = catalog.Data,
@@ -39,9 +42,16 @@ public class CatalogController : Controller
             PaginationInfo = info
         };
 
-        vm.PaginationInfo.Next = (vm.PaginationInfo.ActualPage == vm.PaginationInfo.TotalPages - 1) ? "is-disabled" : "";
-        vm.PaginationInfo.Previous = (vm.PaginationInfo.ActualPage == 0) ? "is-disabled" : "";
+        vm.PaginationInfo.Next = (vm.PaginationInfo.ActualPage == vm.PaginationInfo.TotalPages - 1) ? "is-disabled" : string.Empty;
+        vm.PaginationInfo.Previous = (vm.PaginationInfo.ActualPage == 0) ? "is-disabled" : string.Empty;
 
         return View(vm);
     }
+
+    public async Task<IActionResult> Detail(int id)
+	{
+		var catalogItem = await _catalogService.GetItem(id);
+
+		return View(catalogItem);
+	}
 }

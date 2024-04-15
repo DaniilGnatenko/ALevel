@@ -29,15 +29,12 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
         _mapper = mapper;
     }
 
-    public async Task<ItemResponse<CatalogItemDto>> GetByIdAsync(int id)
+    public async Task<CatalogItemDto> GetByIdAsync(int id)
     {
         return await ExecuteSafeAsync(async () =>
         {
             var result = await _catalogItemRepository.GetByIdAsync(id);
-            return new ItemResponse<CatalogItemDto>()
-            {
-                Item = _mapper.Map<CatalogItemDto>(result)
-            };
+            return _mapper.Map<CatalogItemDto>(result);
         });
     }
 
@@ -58,7 +55,6 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
 
     public async Task<PaginatedItemsResponse<CatalogItemDto>> GetCatalogItemsAsync(int pageSize, int pageIndex, Dictionary<CatalogTypeFilter, int>? filters)
     {
-
         return await ExecuteSafeAsync(async () =>
         {
             int? brandFilter = null;
@@ -66,7 +62,6 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
 
             if (filters != null)
             {
-                
                 if (filters.TryGetValue(CatalogTypeFilter.Brand, out var brand) && !filters.ContainsValue(1))
                 {
                     brandFilter = brand;

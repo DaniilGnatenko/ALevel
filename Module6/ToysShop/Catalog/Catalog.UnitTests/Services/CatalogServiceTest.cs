@@ -169,7 +169,7 @@ public class CatalogServiceTest
                 {
                     BrandName = "TestName",
                 },
-            }            
+            }
         };
 
         var catalogBrandsSuccess = new CatalogBrandEntity()
@@ -229,7 +229,7 @@ public class CatalogServiceTest
                 {
                     TypeName = "TestName",
                 },
-            } 
+            }
         };
 
         var catalogTypesSuccess = new CatalogTypeEntity()

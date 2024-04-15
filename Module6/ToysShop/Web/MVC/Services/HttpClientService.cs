@@ -49,7 +49,7 @@ public class HttpClientService : IHttpClientService
         return default(TResponse)!;
     }
 
-    public async Task<bool> SendAsync(string url, HttpMethod method)
+    public async Task<TResponse> SendAsync<TResponse>(string url, HttpMethod method)
     {
         var client = _clientFactory.CreateClient();
 
@@ -65,7 +65,13 @@ public class HttpClientService : IHttpClientService
 
         var result = await client.SendAsync(httpMessage);
 
+        if (result.IsSuccessStatusCode)
+        {
+            var resultContent = await result.Content.ReadAsStringAsync();
+            var response = JsonConvert.DeserializeObject<TResponse>(resultContent);
+            return response!;
+        }
 
-        return result.IsSuccessStatusCode;
+        return default(TResponse)!;
     }
 }

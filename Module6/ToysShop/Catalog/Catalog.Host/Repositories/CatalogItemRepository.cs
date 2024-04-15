@@ -1,8 +1,6 @@
 ﻿using Catalog.Host.Data;
 using Catalog.Host.Data.Entities;
 using Catalog.Host.Repositories.Interfaces;
-using Catalog.Host.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Host.Repositories
 {
@@ -141,5 +139,21 @@ namespace Catalog.Host.Repositories
 
             return null;
         }
-    }
+
+        public async Task<int?> Update(int id, int availableStock)
+		{
+			var itemToUpdate = await _dbContext.CatalogItemEntities.Where(w => w.Id == id).FirstOrDefaultAsync();
+
+			if (itemToUpdate != null)
+			{
+				itemToUpdate.AvailableStock = availableStock;
+
+				await _dbContext.SaveChangesAsync();
+
+				return itemToUpdate.Id;
+			}
+
+			return null;
+		}
+	}
 }

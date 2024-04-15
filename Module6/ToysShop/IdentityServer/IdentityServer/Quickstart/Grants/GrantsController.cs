@@ -1,13 +1,11 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using IdentityServer4.Services;
-using IdentityServer4.Stores;
-using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.Services;
+using IdentityServer4.Stores;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -26,7 +24,8 @@ namespace IdentityServer4.Quickstart.UI
         private readonly IResourceStore _resources;
         private readonly IEventService _events;
 
-        public GrantsController(IIdentityServerInteractionService interaction,
+        public GrantsController(
+            IIdentityServerInteractionService interaction,
             IClientStore clients,
             IResourceStore resources,
             IEventService events)
@@ -37,18 +36,20 @@ namespace IdentityServer4.Quickstart.UI
             _events = events;
         }
 
-        /// <summary>
-        /// Show list of grants
-        /// </summary>
+		/// <summary>
+		/// Show list of grants
+		/// </summary>
+		/// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View("Index", await BuildViewModelAsync());
         }
 
-        /// <summary>
-        /// Handle postback to revoke a client
-        /// </summary>
+		/// <summary>
+		/// Handle postback to revoke a client
+		/// </summary>
+		/// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Revoke(string clientId)
@@ -64,7 +65,7 @@ namespace IdentityServer4.Quickstart.UI
             var grants = await _interaction.GetAllUserConsentsAsync();
 
             var list = new List<GrantViewModel>();
-            foreach(var grant in grants)
+            foreach (var grant in grants)
             {
                 var client = await _clients.FindClientByIdAsync(grant.ClientId);
                 if (client != null)

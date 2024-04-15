@@ -122,7 +122,41 @@ public class CatalogItemServiceTest
     }
 
     [Fact]
-    public async Task Delete_Success() 
+    public async Task UpdateStock_Success()
+	{
+		// arrange
+		int? testResult = 1;
+
+		_catalogItemRepository.Setup(s => s.Update(
+			It.IsAny<int>(),
+			It.IsAny<int>())).ReturnsAsync(testResult);
+
+		// act
+		var result = await _catalogItemService.Update(_testItem.Id, _testItem.AvailableStock);
+
+		// assert
+		result.Should().Be(testResult);
+	}
+
+    [Fact]
+    public async Task UpdateStock_Failed()
+	{
+		// arrange
+		int? testResult = null;
+
+		_catalogItemRepository.Setup(s => s.Update(
+			It.IsAny<int>(),
+			It.IsAny<int>())).ReturnsAsync(testResult);
+
+		// act
+		var result = await _catalogItemService.Update(_testItem.Id, _testItem.AvailableStock);
+
+		// assert
+		result.Should().Be(testResult);
+	}
+
+    [Fact]
+    public async Task Delete_Success()
     {
         // arrange
         bool testResult = true;

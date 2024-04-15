@@ -1,9 +1,9 @@
-﻿using IdentityModel.Client;
+﻿using System.Text;
+using IdentityModel.Client;
 using Infrastructure.Configuration;
 using Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Text;
 
 namespace Infrastructure.Services;
 

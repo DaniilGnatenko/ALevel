@@ -43,8 +43,11 @@ public class CacheService : ICacheService
     private string GetItemCacheKey(string userId) =>
         $"{userId}";
 
-    private async Task AddOrUpdateInternalAsync<T>(string key, T value,
-        IDatabase redis = null!, TimeSpan? expiry = null)
+    private async Task AddOrUpdateInternalAsync<T>(
+        string key,
+        T value,
+        IDatabase redis = null!,
+        TimeSpan? expiry = null)
     {
         redis = redis ?? GetRedisDatabase();
         expiry = expiry ?? _config.CacheTimeout;

@@ -16,6 +16,7 @@ namespace Catalog.Host.Repositories
             _dbContext = dbContextWrapper.DbContext;
             _logger = logger;
         }
+
         public async Task<int?> Add(string name)
         {
             var type = await _dbContext.CatalogTypeEntities.AddAsync(new CatalogTypeEntity() { TypeName = name });
@@ -23,7 +24,6 @@ namespace Catalog.Host.Repositories
             await _dbContext.SaveChangesAsync();
 
             return type.Entity.Id;
-
         }
 
         public async Task<bool> Delete(int id)
@@ -35,12 +35,12 @@ namespace Catalog.Host.Repositories
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
+
             return false;
         }
 
         public async Task<PaginatedItems<CatalogTypeEntity>> GetTypes(int pageIndex, int pageSize)
         {
-
             var totalItems = await _dbContext.CatalogTypeEntities
             .LongCountAsync();
 
@@ -62,6 +62,7 @@ namespace Catalog.Host.Repositories
                 await _dbContext.SaveChangesAsync();
                 return typeToUpdate.Id;
             }
+
             return null;
         }
     }

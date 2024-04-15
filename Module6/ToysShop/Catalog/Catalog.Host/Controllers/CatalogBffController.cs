@@ -1,34 +1,27 @@
-﻿using Catalog.Host.Configurations;
-using Catalog.Host.Models.Dtos;
+﻿using Catalog.Host.Models.Dtos;
 using Catalog.Host.Models.Enums;
 using Catalog.Host.Models.Requests;
 using Catalog.Host.Models.Responses;
 using Catalog.Host.Services.Interfaces;
-using Infrastructure;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Catalog.Host.Controllers;
 
 [ApiController]
-[Authorize(Policy = AuthPolicy.AllowClientPolicy)]
+[Authorize(Policy = AuthPolicy.AllowEndUserPolicy)]
 [Route(ComponentDefaults.DefaultRoute)]
 public class CatalogBffController : ControllerBase
 {
     private readonly ILogger<CatalogBffController> _logger;
     private readonly ICatalogService _catalogService;
-    private readonly IOptions<CatalogConfig> _config;
 
     public CatalogBffController(
         ILogger<CatalogBffController> logger,
-        ICatalogService catalogService,
-         IOptions<CatalogConfig> config)
+        ICatalogService catalogService)
     {
         _logger = logger;
         _catalogService = catalogService;
-        _config = config;
     }
 
     [HttpPost]
@@ -60,7 +53,7 @@ public class CatalogBffController : ControllerBase
 
     [HttpPost]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(ItemResponse<CatalogItemDto>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(CatalogItemDto), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> Item(ItemRequest request)
     {
         var result = await _catalogService.GetByIdAsync(request.Id);
@@ -68,6 +61,7 @@ public class CatalogBffController : ControllerBase
         {
             return NotFound();
         }
+
         return Ok(result);
     }
 }

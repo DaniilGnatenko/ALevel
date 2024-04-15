@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Middleware
 {
@@ -29,14 +28,6 @@ namespace Infrastructure.Middleware
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await context.Response.WriteAsync("Internal Server Error");
             }
-        }
-    }
-    public static class RequestLoggingMiddlewareExtensions
-    {
-        public static IApplicationBuilder UseRequestLogging(
-            this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<RequestLoggingMiddleware>();
         }
     }
 }

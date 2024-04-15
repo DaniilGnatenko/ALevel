@@ -1,8 +1,8 @@
-﻿using Basket.Services.Interfaces;
+﻿using System.Text;
+using Basket.Services.Interfaces;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Newtonsoft.Json;
-using System.Text;
 
 namespace Basket.Services;
 

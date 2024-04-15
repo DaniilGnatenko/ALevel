@@ -1,14 +1,12 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 #pragma warning disable CS0618
-
-
+using System.Threading.Tasks;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -39,9 +37,10 @@ namespace IdentityServer4.Quickstart.UI
             return NotFound();
         }
 
-        /// <summary>
-        /// Shows the error page
-        /// </summary>
+		/// <summary>
+		/// Shows the error page
+		/// </summary>
+		/// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
         public async Task<IActionResult> Error(string errorId)
         {
             var vm = new ErrorViewModel();

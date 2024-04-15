@@ -18,7 +18,6 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(typeof(HttpGlobalExceptionFilter));
 }).AddJsonOptions(options => options.JsonSerializerOptions.WriteIndented = true);
 
-
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -91,7 +90,6 @@ app.UseSwagger()
         setup.OAuthClientId("catalogswaggerui");
         setup.OAuthAppName("Catalog Swagger UI");
     });
-
 
 app.UseRouting();
 app.UseCors("CorsPolicy");

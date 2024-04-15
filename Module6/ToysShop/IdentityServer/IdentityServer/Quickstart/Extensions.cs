@@ -5,13 +5,13 @@ namespace IdentityServer4.Quickstart.UI
 {
     public static class Extensions
     {
-        /// <summary>
-        /// Determines whether the client is configured to use PKCE.
-        /// </summary>
-        /// <param name="store">The store.</param>
-        /// <param name="client_id">The client identifier.</param>
-        /// <returns></returns>
-        public static async Task<bool> IsPkceClientAsync(this IClientStore store, string client_id)
+		/// <summary>
+		/// Determines whether the client is configured to use PKCE.
+		/// </summary>
+		/// <param name="store">The store.</param>
+		/// <param name="client_id">The client identifier.</param>
+		/// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
+		public static async Task<bool> IsPkceClientAsync(this IClientStore store, string client_id)
         {
             if (!string.IsNullOrWhiteSpace(client_id))
             {

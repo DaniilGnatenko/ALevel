@@ -42,7 +42,7 @@ public class RateLimitFilter : ActionFilterAttribute
             context.Result = new StatusCodeResult(500);
             return;
         }
+
         await base.OnActionExecutionAsync(context, next);
     }
 }
-
