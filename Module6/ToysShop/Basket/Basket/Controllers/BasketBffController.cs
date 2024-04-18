@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Basket.Controllers;
 
 [ApiController]
-[Authorize(Policy = AuthPolicy.AllowClientPolicy)]
+[Authorize(Policy = AuthPolicy.AllowEndUserPolicy)]
 [Route(ComponentDefaults.DefaultRoute)]
 public class BasketBffController : ControllerBase
 {

@@ -63,7 +63,7 @@ namespace IdentityServer
 					AllowedGrantTypes = GrantTypes.Code,
 					ClientSecrets = { new Secret("secret".Sha256()) },
 					RedirectUris = { $"{configuration["MvcUrl"]}/signin-oidc" },
-					AllowedScopes = { "openid", "profile", "mvc", "catalog.catalogitem" },
+					AllowedScopes = { "openid", "profile", "mvc", "catalog.catalogitem", "order.orderitem", "basket.basketitem" },
 					RequirePkce = true,
 					RequireConsent = false
 				},

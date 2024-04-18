@@ -13,7 +13,7 @@ using StackExchange.Redis;
 namespace Order.Host.Controllers;
 
 [ApiController]
-[Authorize(Policy = AuthPolicy.AllowClientPolicy)]
+[Authorize(Policy = AuthPolicy.AllowEndUserPolicy)]
 [Route(ComponentDefaults.DefaultRoute)]
 public class OrderBffController : ControllerBase
 {

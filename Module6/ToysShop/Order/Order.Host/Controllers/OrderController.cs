@@ -11,7 +11,7 @@ using Order.Host.Services.Interfaces;
 namespace Order.Host.Controllers;
 
 [ApiController]
-[Authorize(Policy = AuthPolicy.AllowEndUserPolicy)]
+[Authorize(Policy = AuthPolicy.AllowClientPolicy)]
 [Scope("order.orderitem")]
 [Route(ComponentDefaults.DefaultRoute)]
 public class OrderController : ControllerBase

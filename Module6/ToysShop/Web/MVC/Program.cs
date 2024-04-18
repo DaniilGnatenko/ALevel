@@ -50,6 +50,8 @@ builder.Services.AddAuthentication(options =>
         options.Scope.Add("profile");
         options.Scope.Add("mvc");
         options.Scope.Add("catalog.catalogitem");
+        options.Scope.Add("order.orderitem");
+        options.Scope.Add("basket.basketitem");
     });
 
 builder.Services.Configure<AppSettings>(configuration);
