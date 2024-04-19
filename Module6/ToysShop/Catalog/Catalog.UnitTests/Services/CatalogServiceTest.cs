@@ -63,13 +63,15 @@ public class CatalogServiceTest
 
         _catalogItemRepository.Setup(s => s.GetByPageAsync(
             It.Is<int>(i => i == testPageIndex),
-            It.Is<int>(i => i == testPageSize))).ReturnsAsync(pagingPaginatedItemsSuccess);
+            It.Is<int>(i => i == testPageSize),
+            It.IsAny<int?>(),
+            It.IsAny<int?>())).ReturnsAsync(pagingPaginatedItemsSuccess);
 
         _mapper.Setup(s => s.Map<CatalogItemDto>(
             It.Is<CatalogItemEntity>(i => i.Equals(catalogItemSuccess)))).Returns(catalogItemDtoSuccess);
 
         // act
-        var result = await _catalogService.GetCatalogItemsAsync(testPageSize, testPageIndex);
+        var result = await _catalogService.GetCatalogItemsAsync(testPageSize, testPageIndex, null);
 
         // assert
         result.Should().NotBeNull();
@@ -88,10 +90,12 @@ public class CatalogServiceTest
 
         _catalogItemRepository.Setup(s => s.GetByPageAsync(
             It.Is<int>(i => i == testPageIndex),
-            It.Is<int>(i => i == testPageSize))).Returns((Func<PaginatedItemsResponse<CatalogItemDto>>)null!);
+            It.Is<int>(i => i == testPageSize),
+            It.IsAny<int?>(),
+            It.IsAny<int?>())).Returns((Func<PaginatedItemsResponse<CatalogItemDto>>)null!);
 
         // act
-        var result = await _catalogService.GetCatalogItemsAsync(testPageSize, testPageIndex);
+        var result = await _catalogService.GetCatalogItemsAsync(testPageSize, testPageIndex, null);
 
         // assert
         result.Should().BeNull();
@@ -150,134 +154,6 @@ public class CatalogServiceTest
     }
 
     [Fact]
-    public async Task GetByBrandAsync_Success()
-    {
-        var testId = 1;
-        var testPageIndex = 0;
-        var testPageSize = 4;
-        var testTotalCount = 1;
-
-        var pagingPaginatedItemsSuccess = new PaginatedItems<CatalogItemEntity>()
-        {
-            TotalCount = testTotalCount,
-            Data = new List<CatalogItemEntity>()
-            {
-                new CatalogItemEntity()
-                {
-                    Name = "TestName"
-                },
-            }           
-        };
-
-        var catalogItemSuccess = new CatalogItemEntity()
-        {
-            Name = "TestName"
-        };
-
-        var catalogItemDtoSuccess = new CatalogItemDto()
-        {
-            Name = "TestName"
-        };
-
-        _catalogItemRepository.Setup(s => s.GetByBrandAsync(
-            It.Is<int>(i => i == testId),
-            It.Is<int>(i => i == testPageIndex),
-            It.Is<int>(i => i == testPageSize))).ReturnsAsync(pagingPaginatedItemsSuccess);
-
-        _mapper.Setup(s => s.Map<CatalogItemDto>(
-            It.Is<CatalogItemEntity>(i => i.Equals(catalogItemSuccess)))).Returns(catalogItemDtoSuccess);
-
-        var result = await _catalogService.GetByBrandAsync(testId, testPageSize, testPageIndex);
-
-        result.Should().NotBeNull();
-        result?.Data.Should().NotBeNull();
-        result?.Count.Should().Be(testTotalCount);
-        result?.PageIndex.Should().Be(testPageIndex);
-        result?.PageSize.Should().Be(testPageSize);
-    }
-
-    [Fact]
-    public async Task GetByBrandAsync_Failed()
-    {
-        var testId = 50;
-        var testPageIndex = 1000;
-        var testPageSize = 10000;
-
-        _catalogItemRepository.Setup(s => s.GetByBrandAsync(
-            It.Is<int>(i => i == testId),
-            It.Is<int>(i => i == testPageIndex),
-            It.Is<int>(i => i == testPageSize))).Returns((Func<PaginatedItemsResponse<CatalogItemDto>>)null!);
-
-        var result = await _catalogService.GetByBrandAsync(testId, testPageSize, testPageIndex);
-
-        result.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task GetByTypeAsync_Success()
-    {
-        var testId = 1;
-        var testPageIndex = 0;
-        var testPageSize = 4;
-        var testTotalCount = 2;
-
-        var pagingPaginatedItemsSuccess = new PaginatedItems<CatalogItemEntity>()
-        {
-            TotalCount = testTotalCount,
-            Data = new List<CatalogItemEntity>()
-            {
-                new CatalogItemEntity()
-                {
-                    Name = "TestName",
-                },
-            }            
-        };
-
-        var catalogItemSuccess = new CatalogItemEntity()
-        {
-            Name = "TestName"
-        };
-
-        var catalogItemDtoSuccess = new CatalogItemDto()
-        {
-            Name = "TestName"
-        };
-
-        _catalogItemRepository.Setup(s => s.GetByTypeAsync(
-            It.Is<int>(i => i == testId),
-            It.Is<int>(i => i == testPageIndex),
-            It.Is<int>(i => i == testPageSize))).ReturnsAsync(pagingPaginatedItemsSuccess);
-
-        _mapper.Setup(s => s.Map<CatalogItemDto>(
-            It.Is<CatalogItemEntity>(i => i.Equals(catalogItemSuccess)))).Returns(catalogItemDtoSuccess);
-
-        var result = await _catalogService.GetByTypeAsync(testId, testPageSize, testPageIndex);
-
-        result.Should().NotBeNull();
-        result?.Data.Should().NotBeNull();
-        result?.Count.Should().Be(testTotalCount);
-        result?.PageIndex.Should().Be(testPageIndex);
-        result?.PageSize.Should().Be(testPageSize);
-    }
-
-    [Fact]
-    public async Task GetByTypeAsync_Failed()
-    {
-        var testId = 50;
-        var testPageIndex = 1000;
-        var testPageSize = 10000;
-
-        _catalogItemRepository.Setup(s => s.GetByTypeAsync(
-            It.Is<int>(i => i == testId),
-            It.Is<int>(i => i == testPageIndex),
-            It.Is<int>(i => i == testPageSize))).Returns((Func<PaginatedItemsResponse<CatalogItemDto>>)null!);
-
-        var result = await _catalogService.GetByTypeAsync(testId, testPageSize, testPageIndex);
-
-        result.Should().BeNull();
-    }
-
-    [Fact]
     public async Task GetCatalogBrandsAsync_Success()
     {
         var testPageIndex = 0;
@@ -293,7 +169,7 @@ public class CatalogServiceTest
                 {
                     BrandName = "TestName",
                 },
-            }            
+            }
         };
 
         var catalogBrandsSuccess = new CatalogBrandEntity()
@@ -353,7 +229,7 @@ public class CatalogServiceTest
                 {
                     TypeName = "TestName",
                 },
-            } 
+            }
         };
 
         var catalogTypesSuccess = new CatalogTypeEntity()

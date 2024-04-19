@@ -37,7 +37,7 @@ public class CatalogTypeServiceTest
 
         result.Should().Be(testResult);
     }
-    
+
     [Fact]
     public async Task Add_Failed()
     {

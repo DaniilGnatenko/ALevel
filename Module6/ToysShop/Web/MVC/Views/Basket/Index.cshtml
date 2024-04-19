@@ -1,0 +1,80 @@
+﻿@model MVC.ViewModels.Basket
+@{
+	int totalPrice = 0;
+}
+
+@if (Context.User.Identity.IsAuthenticated)
+{
+	if (Model == null)
+	{
+		<h1>You don't have products in your basket</h1>
+	}
+	else if (Model.Items == null)
+	{
+		<h1>You don't have products in your basket</h1>
+	}
+	else if (Model.Items.Count == 0)
+	{
+		<h1>You don't have products in your basket</h1>
+	}
+	else
+	{
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Product</th>
+					<th scope="col">Price Per One</th>
+					<th scope="col">Amount</th>
+					<th scope="col">
+						<a asp-controller="Basket" asp-action="EmptyTheCart" class="btn btn-outline-danger">Empty the cart</a>
+					</th>
+				</tr>
+			</thead>
+			<tbody class="table-group-divider">
+				@foreach (var orderItem in Model.Items)
+				{
+					<tr>
+						<th scope="row">@(Model.Items.IndexOf(orderItem) + 1)</th>
+						<td>@orderItem.Name</td>
+						<td>@orderItem.PricePerOne</td>
+						<td>
+							<form>
+								<input type="hidden" asp-for="@orderItem.ItemId" name="id" />
+								<button asp-controller="Basket" asp-action="AddToBasket" type="submit" class="btn btn-outline-success" value="@orderItem.ItemId">+</button>
+								@orderItem.Amount
+								<button asp-controller="Basket" asp-action="RemoveFromBasket" type="submit" class="btn btn-outline-danger" value="@orderItem.ItemId">-</button>
+							</form>
+						</td>
+						<td>
+							<form>
+								<input type="hidden" asp-for="@orderItem.ItemId" name="id" />
+								<button asp-controller="Basket" asp-action="DeleteFromBasket" type="submit" class="btn btn-outline-dark" value="@orderItem.ItemId">Delete</button>
+							</form>
+						</td>
+					</tr>
+					@(totalPrice += orderItem.PricePerOne * orderItem.Amount);
+				}
+			</tbody>
+			<tfoot>
+				<tr>
+					<th scope="row"></th>
+					<td></td>
+					<td></td>
+					<td>
+						Total Price: @totalPrice
+					</td>
+					<td>
+						<a asp-controller="Order" asp-action="CreateOrder" class="btn btn-outline-success">CreateOrder</a>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+		
+
+	}
+}
+else
+{
+	<h1>You need to be logged in to use the shopping cart</h1>
+}

@@ -1,8 +1,6 @@
 ﻿using Catalog.Host.Data;
 using Catalog.Host.Data.Entities;
 using Catalog.Host.Repositories.Interfaces;
-using Catalog.Host.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Host.Repositories
 {
@@ -75,19 +73,28 @@ namespace Catalog.Host.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<PaginatedItems<CatalogItemEntity>> GetByPageAsync(int pageIndex, int pageSize)
+        public async Task<PaginatedItems<CatalogItemEntity>> GetByPageAsync(int pageIndex, int pageSize, int? brandFilter, int? typeFilter)
         {
+            IQueryable<CatalogItemEntity> query = _dbContext.CatalogItemEntities;
 
-            var totalItems = await _dbContext.CatalogItemEntities
-                .LongCountAsync();
+            if (brandFilter.HasValue)
+            {
+                query = query.Where(w => w.CatalogBrandId == brandFilter.Value);
+            }
 
-            var itemsOnPage = await _dbContext.CatalogItemEntities
-                .Include(i => i.CatalogBrand)
-                .Include(i => i.CatalogType)
-                .OrderBy(c => c.Name)
-                .Skip(pageSize * pageIndex)
-                .Take(pageSize)
-                .ToListAsync();
+            if (typeFilter.HasValue)
+            {
+                query = query.Where(w => w.CatalogTypeId == typeFilter.Value);
+            }
+
+            var totalItems = await query.LongCountAsync();
+
+            var itemsOnPage = await query.OrderBy(c => c.Name)
+               .Include(i => i.CatalogBrand)
+               .Include(i => i.CatalogType)
+               .Skip(pageSize * pageIndex)
+               .Take(pageSize)
+               .ToListAsync();
 
             return new PaginatedItems<CatalogItemEntity>() { TotalCount = totalItems, Data = itemsOnPage };
         }
@@ -109,7 +116,7 @@ namespace Catalog.Host.Repositories
             return new PaginatedItems<CatalogItemEntity>() { TotalCount = totalItems, Data = itemsOnPage };
         }
 
-        public async Task<int?> Update(int id, string name, string description, int price, int catalogBrandId, int catalogTypeId, string pictureFileName)
+        public async Task<int?> Update(int id, string name, string description, int price, int catalogBrandId, int catalogTypeId, string pictureFileName, int availableStock)
         {
             var itemToUpdate = await _dbContext.CatalogItemEntities.Where(w => w.Id == id).FirstOrDefaultAsync();
 
@@ -123,6 +130,7 @@ namespace Catalog.Host.Repositories
                 itemToUpdate.PictureFileName = pictureFileName;
                 itemToUpdate.CatalogTypeId = catalogTypeId;
                 itemToUpdate.CatalogType = await _dbContext.CatalogTypeEntities.Where(w => w.Id == catalogTypeId).FirstOrDefaultAsync();
+                itemToUpdate.AvailableStock = availableStock;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -131,5 +139,21 @@ namespace Catalog.Host.Repositories
 
             return null;
         }
-    }
+
+        public async Task<int?> Update(int id, int availableStock)
+		{
+			var itemToUpdate = await _dbContext.CatalogItemEntities.Where(w => w.Id == id).FirstOrDefaultAsync();
+
+			if (itemToUpdate != null)
+			{
+				itemToUpdate.AvailableStock = availableStock;
+
+				await _dbContext.SaveChangesAsync();
+
+				return itemToUpdate.Id;
+			}
+
+			return null;
+		}
+	}
 }

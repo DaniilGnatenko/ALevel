@@ -6,7 +6,6 @@ namespace Catalog.Host.Services;
 
 public class CatalogItemService : BaseDataService<ApplicationDbContext>, ICatalogItemService
 {
-
     private readonly ICatalogItemRepository _catalogItemRepository;
 
     public CatalogItemService(
@@ -28,8 +27,13 @@ public class CatalogItemService : BaseDataService<ApplicationDbContext>, ICatalo
         return ExecuteSafeAsync(() => _catalogItemRepository.Delete(id));
     }
 
-    public Task<int?> Update(int id, string name, string description, int price, int catalogBrandId, int catalogTypeId, string pictureFileName)
+    public Task<int?> Update(int id, string name, string description, int price, int catalogBrandId, int catalogTypeId, string pictureFileName, int availableStock)
     {
-        return ExecuteSafeAsync(() => _catalogItemRepository.Update(id, name, description, price, catalogBrandId, catalogTypeId, pictureFileName));
+        return ExecuteSafeAsync(() => _catalogItemRepository.Update(id, name, description, price, catalogBrandId, catalogTypeId, pictureFileName, availableStock));
     }
+
+    public Task<int?> Update(int id, int availableStock)
+	{
+		return ExecuteSafeAsync(() => _catalogItemRepository.Update(id, availableStock));
+	}
 }

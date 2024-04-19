@@ -3,13 +3,14 @@ using Catalog.Host.Models.Requests.DeleteRequests;
 using Catalog.Host.Models.Requests.UpdateRequests;
 using Catalog.Host.Models.Responses;
 using Catalog.Host.Services.Interfaces;
-using Infrastructure;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Catalog.Host.Controllers;
 
 [ApiController]
+[Authorize(Policy = AuthPolicy.AllowClientPolicy)]
+[Scope("catalog.catalogitem")]
 [Route(ComponentDefaults.DefaultRoute)]
 public class CatalogItemController : ControllerBase
 {
@@ -37,6 +38,11 @@ public class CatalogItemController : ControllerBase
     public async Task<IActionResult> Delete(DeleteRequest request)
     {
         var result = await _catalogItemService.Delete(request.Id);
+        if (result == false)
+        {
+            return NotFound();
+        }
+
         return Ok(new DeleteItemResponse() { IsSuccess = result });
     }
 
@@ -44,7 +50,25 @@ public class CatalogItemController : ControllerBase
     [ProducesResponseType(typeof(UpdateResponse<int?>), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> Update(UpdateProductRequest request)
     {
-        var result = await _catalogItemService.Update(request.Id, request.Name, request.Description, request.Price, request.CatalogBrandId, request.CatalogTypeId, request.PictureFileName);
+        var result = await _catalogItemService.Update(request.Id, request.Name, request.Description, request.Price, request.CatalogBrandId, request.CatalogTypeId, request.PictureFileName, request.AvailableStock);
+        if (result == null)
+        {
+            return NotFound();
+        }
+
         return Ok(new UpdateResponse<int?>() { Id = result });
     }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(UpdateResponse<int?>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> UpdateStock(UpdateProductStockRequest request)
+	{
+		var result = await _catalogItemService.Update(request.Id, request.AvailableStock);
+		if (result == null)
+		{
+			return NotFound();
+		}
+
+		return Ok(new UpdateResponse<int?>() { Id = result });
+	}
 }

@@ -2,6 +2,6 @@
 {
     public class DeleteItemResponse
     {
-        public bool IsSuccess {  get; set; }
+        public bool IsSuccess { get; set; }
     }
 }

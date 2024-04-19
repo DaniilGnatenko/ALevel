@@ -19,7 +19,7 @@ public class CatalogBrandServiceTest
     {
         _catalogBrandRepository = new Mock<ICatalogBrandRepository>();
         _dbContextWrapper = new Mock<IDbContextWrapper<ApplicationDbContext>>();
-        _logger =  new Mock<ILogger<CatalogBrandService>>();
+        _logger = new Mock<ILogger<CatalogBrandService>>();
 
         var dbContextTransaction = new Mock<IDbContextTransaction>();
         _dbContextWrapper.Setup(s => s.BeginTransactionAsync(CancellationToken.None)).ReturnsAsync(dbContextTransaction.Object);
@@ -39,7 +39,7 @@ public class CatalogBrandServiceTest
 
         result.Should().Be(testResult);
     }
-    
+
     [Fact]
     public async Task Add_Failed()
     {
@@ -52,7 +52,7 @@ public class CatalogBrandServiceTest
 
         result.Should().Be(testResult);
     }
-    
+
     [Fact]
     public async Task Update_Success()
     {
@@ -66,7 +66,7 @@ public class CatalogBrandServiceTest
 
         result.Should().Be(testResult);
     }
-    
+
     [Fact]
     public async Task Update_Failed()
     {
@@ -80,7 +80,7 @@ public class CatalogBrandServiceTest
 
         result.Should().Be(testResult);
     }
-    
+
     [Fact]
     public async Task Delete_Success()
     {
@@ -93,7 +93,7 @@ public class CatalogBrandServiceTest
 
         result.Should().Be(testResult);
     }
-    
+
     [Fact]
     public async Task Delete_Failed()
     {

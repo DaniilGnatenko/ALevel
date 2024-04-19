@@ -24,18 +24,18 @@ namespace Catalog.Host.Repositories
             await _dbContext.SaveChangesAsync();
 
             return brand.Entity.Id;
-
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             var brandToDelete = await _dbContext.CatalogBrandEntities.Where(w => w.Id == id).FirstOrDefaultAsync();
-            if (brandToDelete != null) 
+            if (brandToDelete != null)
             {
                 _dbContext.CatalogBrandEntities.Remove(brandToDelete);
-                await _dbContext.SaveChangesAsync();    
+                await _dbContext.SaveChangesAsync();
                 return true;
             }
+
             return false;
         }
 
@@ -63,6 +63,7 @@ namespace Catalog.Host.Repositories
                 await _dbContext.SaveChangesAsync();
                 return brandToUpdate.Id;
             }
+
             return null;
         }
     }
